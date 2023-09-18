@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Precios y Ventas</title>
+    <!-- Agregar enlaces a Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Lista de Precios y Ventas</h1>
+
+      <!-- Botón para abrir el modal de ventas -->
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#ventaModal"
+      >
+        Realizar Venta
+      </button>
+
+      <br /><br />
+
+      <h3 class="mb-4">Agregar nuevo producto</h3>
+
+      <!-- Formulario para ingresar los datos -->
+      <form id="precioForm" class="mt-4">
+        <div class="form-group">
+          <label for="nombre">Nombre del Producto:</label>
+          <input type="text" class="form-control" id="nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="unidades">Unidades por Display/Caja:</label>
+          <input type="number" class="form-control" id="unidades" required />
+        </div>
+        <div class="form-group">
+          <label for="costo">Costo Unitario (en pesos chilenos):</label>
+          <input type="number" class="form-control" id="costo" required />
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+      </form>
+
+      <!-- Lista de precios -->
+      <div class="mt-4">
+        <h2>Precios Guardados</h2>
+        <button type="button" class="btn btn-info" id="exportarDatos">
+          Exportar Datos
+        </button>
+        <input
+          type="file"
+          accept=".json"
+          id="importarDatos"
+          style="display: none"
+        />
+        <button type="button" class="btn btn-success" id="botonImportar">
+          Importar Datos
+        </button>
+        <br /><br />
+
+        <ul id="listaPrecios" class="list-group">
+          <!-- Aquí se mostrarán los precios guardados -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Modal de ventas -->
+    <div
+      class="modal fade"
+      id="ventaModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="ventaModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ventaModalLabel">Realizar Venta</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="ventaForm">
+              <div class="form-group">
+                <label for="producto">Producto:</label>
+                <select class="form-control" id="producto" required>
+                  <!-- Opciones de productos se generan dinámicamente -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cantidad">Cantidad de Packs:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cantidad"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="margen">Margen de Ganancia (%):</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="margen"
+                  required
+                />
+              </div>
+            </form>
+            <button type="button" class="btn btn-primary" id="calcularVenta">
+              Calcular Venta
+            </button>
+          </div>
+          <div class="modal-footer">
+            <div class="row">
+              <div class="col-md-6">
+                <p class="font-weight-bold">Total:</p>
+                <p id="totalVenta" class="text-left"></p>
+              </div>
+              <div class="col-md-6">
+                <p class="font-weight-bold">Desglose:</p>
+                <ul id="desgloseCostos"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de edición de producto -->
+    <div
+      class="modal fade"
+      id="editarProductoModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editarProductoModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarProductoModalLabel">
+              Editar Producto
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="editarProductoForm">
+              <div class="form-group">
+                <label for="editNombre">Nombre del Producto:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editNombre"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editUnidades">Unidades por Display/Caja:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editUnidades"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editCosto"
+                  >Costo Unitario (en pesos chilenos):</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editCosto"
+                  required
+                />
+              </div>
+            </form>
+            <button type="button" class="btn btn-primary" id="guardarEdicion">
+              Guardar Cambios
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br><br>
+    <!-- Agregar enlaces a Bootstrap y jQuery para funcionalidad -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
