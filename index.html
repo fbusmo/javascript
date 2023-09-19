@@ -23,7 +23,7 @@
         Realizar venta
       </button>
 
-      <br /><br />
+      <br />
 
       <h3 class="mb-4">Agregar nuevo producto</h3>
 
@@ -59,10 +59,17 @@
         <button type="button" class="btn btn-success" id="botonImportar">
           Importar Datos
         </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="ordenarAlfabeticamente"
+        >
+          Ordenar alfabéticamente
+        </button>
         <br /><br />
 
-        <ul id="listaPrecios" class="list-group">
-        </ul>
+        <ul id="listaPrecios" class="list-group"></ul>
       </div>
     </div>
 
@@ -92,11 +99,36 @@
             <form id="ventaForm">
               <div class="form-group">
                 <label for="producto">Producto:</label>
-                <select class="form-control" id="producto" required>
-                </select>
+                <select class="form-control" id="producto" required></select>
               </div>
               <div class="form-group">
-                <label for="cantidad">Cantidad de Packs:</label>
+                <label for="ventaTipo">Tipo de Venta:</label>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="ventaTipo"
+                    id="ventaPacks"
+                    value="packs"
+                    checked
+                  />
+                  <label class="form-check-label" for="ventaPacks">Packs</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="ventaTipo"
+                    id="ventaUnidades"
+                    value="unidades"
+                  />
+                  <label class="form-check-label" for="ventaUnidades"
+                    >Unidades</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cantidad">Cantidad:</label>
                 <input
                   type="number"
                   class="form-control"
@@ -179,9 +211,7 @@
                 />
               </div>
               <div class="form-group">
-                <label for="editCosto"
-                  >Costo Unitario:</label
-                >
+                <label for="editCosto">Costo Unitario:</label>
                 <input
                   type="number"
                   class="form-control"
@@ -198,7 +228,7 @@
       </div>
     </div>
 
-    <br><br>
+    <br />
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
