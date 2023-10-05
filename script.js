@@ -1,255 +1,233 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de Precios y Ventas</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      /* Aplica la fuente Inter y Open Sans a todos los elementos */
-      html,
-      body {
-        font-family: "Work Sans", sans-serif;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container mt-5">
-      <h1 class="mb-4">Listado de Precios 2023</h1>
+// Variable para rastrear el índice del producto que se va a editar
+let indiceProductoAEditar = -1;
 
-      <!-- Botón para abrir el modal de ventas -->
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-toggle="modal"
-        data-target="#ventaModal"
-      >
-        Realizar Venta
-      </button>
+// Función para manejar el envío del formulario de precios
+document.getElementById("precioForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-      <br /><br />
+  // Obtener valores de los campos
+  const nombre = document.getElementById("nombre").value;
+  const unidades = parseInt(document.getElementById("unidades").value);
+  const costo = parseFloat(document.getElementById("costo").value);
 
-      <h3 class="mb-4">Agregar Nuevo Producto</h3>
+  // Crear un objeto con los datos
+  const precio = {
+    nombre: nombre,
+    unidades: unidades,
+    costo: costo,
+  };
 
-      <!-- Formulario para ingresar los datos -->
-      <form id="precioForm" class="mt-4">
-        <div class="form-group">
-          <label for="nombre">Nombre del Producto:</label>
-          <input type="text" class="form-control" id="nombre" required />
-        </div>
-        <div class="form-group">
-          <label for="unidades">Unidades por Display/Caja:</label>
-          <input type="number" class="form-control" id="unidades" required />
-        </div>
-        <div class="form-group">
-          <label for="costo">Costo Unitario:</label>
-          <input type="number" class="form-control" id="costo" required />
-        </div>
-        <button type="submit" class="btn btn-success">Guardar Producto</button>
-      </form>
+  // Obtener la lista actual de precios desde el Local Storage
+  let listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
 
-      <!-- Lista de precios -->
-      <div class="mt-4">
-        <h2>Precios Guardados</h2>
+  // Agregar el nuevo precio a la lista
+  listaPrecios.push(precio);
 
-        <!-- Importar y exportar JSON para usar en equipos locales sin perder información -->
+  // Guardar la lista actualizada en el Local Storage
+  localStorage.setItem("listaPrecios", JSON.stringify(listaPrecios));
 
-        <button type="button" class="btn btn-light btn-sm" id="exportarDatos">
-          Exportar Datos
-        </button>
-        <input
-          type="file"
-          accept=".json"
-          id="importarDatos"
-          style="display: none"
-        />
-        <button type="button" class="btn btn-light btn-sm" id="botonImportar">
-          Importar Datos
-        </button>
+  // Limpiar el formulario
+  document.getElementById("precioForm").reset();
 
-        <button
-          type="button"
-          class="btn btn-link btn-sm"
-          id="ordenarAlfabeticamente"
-        >
-          Ordenar alfabéticamente
-        </button>
-        <br /><br />
+  // Actualizar la lista de precios en la página
+  mostrarPrecios();
+});
 
-        <ul id="listaPrecios" class="list-group"></ul>
-      </div>
-    </div>
+// Función para mostrar la lista de precios en la página
+function mostrarPrecios() {
+  const listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
+  const listaPreciosElement = document.getElementById("listaPrecios");
 
-    <!-- Modal de ventas -->
-    <div
-      class="modal fade"
-      id="ventaModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="ventaModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="ventaModalLabel">Realizar Venta</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="ventaForm">
-              <div class="form-group">
-                <label for="producto">Producto:</label>
-                <select class="form-control" id="producto" required></select>
-              </div>
-              <div class="form-group">
-                <label for="ventaTipo">Tipo de Venta:</label>
-                <div class="form-check">
-                  <input
-                    type="radio"
-                    class="form-check-input"
-                    name="ventaTipo"
-                    id="ventaPacks"
-                    value="packs"
-                    checked
-                  />
-                  <label class="form-check-label" for="ventaPacks">Packs</label>
-                </div>
-                <div class="form-check">
-                  <input
-                    type="radio"
-                    class="form-check-input"
-                    name="ventaTipo"
-                    id="ventaUnidades"
-                    value="unidades"
-                  />
-                  <label class="form-check-label" for="ventaUnidades"
-                    >Unidades</label
-                  >
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="cantidad">Cantidad:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="cantidad"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="margen">Margen de Ganancia (%):</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="margen"
-                  required
-                />
-              </div>
-            </form>
-            <button type="button" class="btn btn-primary" id="calcularVenta">
-              Calcular Venta
-            </button>
-          </div>
-          <div class="modal-footer">
-            <div class="row">
-              <div class="col-m-6">
-                <p class="font-weight-bold">Total:</p>
-                <p id="totalVenta"></p>
-              </div>
-              <div class="col-md-6">
-                <p class="font-weight-bold">Desglose:</p>
-                <ul id="desgloseCostos"></ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  // Limpiar la lista actual
+  listaPreciosElement.innerHTML = "";
 
-    <!-- Modal de edición de producto -->
-    <div
-      class="modal fade"
-      id="editarProductoModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="editarProductoModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editarProductoModalLabel">
-              Editar Producto
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="editarProductoForm">
-              <div class="form-group">
-                <label for="editNombre">Nombre del Producto:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editNombre"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="editUnidades">Unidades por Display/Caja:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="editUnidades"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="editCosto">Costo Unitario:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="editCosto"
-                  required
-                />
-              </div>
-            </form>
-            <button type="button" class="btn btn-primary" id="guardarEdicion">
-              Guardar Cambios
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+  // Mostrar cada precio en la lista
+  listaPrecios.forEach(function (precio, index) {
+    const listItem = document.createElement("li");
+    listItem.className = "list-group-item";
+    listItem.innerHTML = `
+        <strong>${precio.nombre}</strong> - Unidades: ${precio.unidades}, Costo Unitario: ${precio.costo} pesos chilenos
+        <button type="button" class="btn btn-warning btn-sm float-right editar-producto" data-indice="${index}">Editar</button>`;
+    listaPreciosElement.appendChild(listItem);
+  });
 
-    <br /><br />
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+  // Actualizar opciones de productos en el formulario de ventas y de edición
+  actualizarOpcionesProductos();
+
+  // Mostrar el campo de tipo de venta en el formulario de ventas
+  document.getElementById("ventaTipo").style.display = "block";
+}
+
+// Función para actualizar las opciones de productos en el formulario de ventas y edición
+function actualizarOpcionesProductos() {
+  const listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
+  const productoSelect = document.getElementById("producto");
+  const editProductoSelect = document.getElementById("editNombre");
+
+  // Limpiar las opciones actuales
+  productoSelect.innerHTML = "";
+  editProductoSelect.innerHTML = "";
+
+  // Agregar opciones basadas en los precios guardados
+  listaPrecios.forEach(function (precio, index) {
+    const option = document.createElement("option");
+    option.value = index;
+    option.text = precio.nombre;
+    productoSelect.appendChild(option);
+
+    const editOption = document.createElement("option");
+    editOption.value = index;
+    editOption.text = precio.nombre;
+    editProductoSelect.appendChild(editOption);
+  });
+}
+
+// Escuchar eventos de clic en los botones "Editar"
+document.getElementById("listaPrecios").addEventListener("click", function (e) {
+  if (e.target.classList.contains("editar-producto")) {
+    const indice = e.target.getAttribute("data-indice");
+    if (indice !== null) {
+      // Mostrar el modal de edición con los datos del producto seleccionado
+      indiceProductoAEditar = parseInt(indice);
+      const productoAEditar = JSON.parse(localStorage.getItem("listaPrecios"))[indiceProductoAEditar];
+      document.getElementById("editNombre").value = productoAEditar.nombre;
+      document.getElementById("editUnidades").value = productoAEditar.unidades;
+      document.getElementById("editCosto").value = productoAEditar.costo;
+      $("#editarProductoModal").modal("show");
+    }
+  }
+});
+
+// Función para guardar los cambios al editar un producto
+document.getElementById("guardarEdicion").addEventListener("click", function () {
+  const nombreEditado = document.getElementById("editNombre").value;
+  const unidadesEditadas = parseInt(document.getElementById("editUnidades").value);
+  const costoEditado = parseFloat(document.getElementById("editCosto").value);
+
+  // Obtener la lista actual de precios desde el Local Storage
+  let listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
+
+  // Actualizar los datos del producto editado
+  listaPrecios[indiceProductoAEditar].nombre = nombreEditado;
+  listaPrecios[indiceProductoAEditar].unidades = unidadesEditadas;
+  listaPrecios[indiceProductoAEditar].costo = costoEditado;
+
+  // Guardar la lista actualizada en el Local Storage
+  localStorage.setItem("listaPrecios", JSON.stringify(listaPrecios));
+
+  // Ocultar el modal de edición
+  $("#editarProductoModal").modal("hide");
+
+  // Actualizar la lista de precios en la página
+  mostrarPrecios();
+});
+
+// Escuchar el evento de clic en el botón "Calcular Venta"
+document.getElementById("calcularVenta").addEventListener("click", function () {
+  // Obtener datos del formulario de venta
+  const productoIndex = parseInt(document.getElementById("producto").value);
+  const cantidadPacks = parseInt(document.getElementById("cantidad").value);
+  const margenGanancia = parseFloat(document.getElementById("margen").value);
+
+  // Obtener el tipo de venta seleccionado (packs o unidades)
+  const ventaTipo = document.querySelector('input[name="ventaTipo"]:checked').value;
+
+  // Obtener la lista de precios
+  const listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
+  const productoSeleccionado = listaPrecios[productoIndex];
+  const costoUnitario = productoSeleccionado.costo;
+  const unidadesPorPack = productoSeleccionado.unidades;
+
+  // Calcular el total de la venta según el tipo de venta
+  let costoTotal;
+  if (ventaTipo === "packs") {
+    costoTotal = cantidadPacks * costoUnitario * unidadesPorPack;
+  } else if (ventaTipo === "unidades") {
+    costoTotal = cantidadPacks * costoUnitario;
+  }
+
+  const margenTotal = (costoTotal * margenGanancia) / 100;
+  const totalVenta = costoTotal + margenTotal;
+
+  // Formatear el total de la venta a pesos chilenos
+  const formatoTotalVenta = new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+  }).format(totalVenta);
+
+  // Formatear el costo total a pesos chilenos
+  const formatoCostoTotal = new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+  }).format(costoTotal);
+
+  // Formatear la ganancia total a pesos chilenos
+  const formatoMargenTotal = new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+  }).format(margenTotal);
+
+  // Mostrar el total de la venta y el desglose de costos
+  document.getElementById("totalVenta").textContent = formatoTotalVenta;
+  const desgloseCostos = document.getElementById("desgloseCostos");
+  desgloseCostos.innerHTML = `<li>Costo: ${formatoCostoTotal}</li>`;
+  desgloseCostos.innerHTML += `<li>Ganancia: ${formatoMargenTotal}</li>`;
+});
+
+// Función para exportar los datos del localStorage a un archivo JSON
+document.getElementById("exportarDatos").addEventListener("click", function () {
+  const listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
+  const contenidoJSON = JSON.stringify(listaPrecios);
+  const blob = new Blob([contenidoJSON], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "lista_precios.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+// Función para manejar la importación de datos desde un archivo JSON
+document.getElementById("botonImportar").addEventListener("click", function () {
+  document.getElementById("importarDatos").click();
+});
+
+document.getElementById("importarDatos").addEventListener("change", function (e) {
+  const archivo = e.target.files[0];
+  if (archivo) {
+    const lector = new FileReader();
+    lector.onload = function (evento) {
+      const contenidoJSON = evento.target.result;
+      const datosImportados = JSON.parse(contenidoJSON);
+      localStorage.setItem("listaPrecios", JSON.stringify(datosImportados));
+      // Actualizar la lista de precios en la página
+      mostrarPrecios();
+    };
+    lector.readAsText(archivo);
+  }
+});
+
+// Función para ordenar la lista de precios alfabéticamente
+function ordenarAlfabeticamente() {
+  // Obtener la lista actual de precios desde el Local Storage
+  let listaPrecios = JSON.parse(localStorage.getItem("listaPrecios")) || [];
+
+  // Ordenar la lista alfabéticamente por el nombre del producto
+  listaPrecios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+  // Guardar la lista ordenada en el Local Storage
+  localStorage.setItem("listaPrecios", JSON.stringify(listaPrecios));
+
+  // Actualizar la lista de precios en la página
+  mostrarPrecios();
+}
+
+// Escuchar el evento de clic en el botón "Ordenar alfabéticamente"
+document.getElementById("ordenarAlfabeticamente").addEventListener("click", function () {
+  ordenarAlfabeticamente();
+});
+
+// Mostrar los precios al cargar la página
+mostrarPrecios();
